@@ -32,7 +32,7 @@ public class App extends Application {
       Pane pane = FXMLLoader.load(getClass().getResource("/views/app.fxml"));
       // pane.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
 
-      primaryStage.setScene(new Scene(pane, 900, 700));
+      primaryStage.setScene(new Scene(pane, 1000, 900));
       primaryStage.show();
     } catch (IOException e) {
       e.printStackTrace();

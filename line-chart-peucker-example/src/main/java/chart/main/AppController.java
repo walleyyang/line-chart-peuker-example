@@ -12,6 +12,13 @@ import javafx.stage.Stage;
  */
 public class AppController {
 
+  private int numberOfMarkers = 500;
+
+  public AppController() {
+    DataSetModel dataSetModel = DataSetModel.getInstance();
+    dataSetModel.createDataSet(numberOfMarkers);
+  }
+
   @FXML
   void displayDefaultLineChart() {
     System.out.println("Displaying Default Line Chart");
@@ -26,6 +33,9 @@ public class AppController {
 
   /**
    * Displays the line chart.
+   * 
+   * @param title The title for the new stage
+   * @param lineChartType The line chart type to display
    */
   private void displayLineChart(String title, String lineChartType) {
     try {
@@ -36,8 +46,11 @@ public class AppController {
 
       Pane pane = loader.load();
 
+      int width = 1500;
+      int height = 800;
+
       Stage stage = new Stage();
-      stage.setScene(new Scene(pane, 1000, 700));
+      stage.setScene(new Scene(pane, width, height));
       stage.setTitle(title);
       stage.show();
     } catch (IOException e) {
