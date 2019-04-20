@@ -12,7 +12,7 @@ import javafx.stage.Stage;
  */
 public class AppController {
 
-  private int numberOfMarkers = 500;
+  private int numberOfMarkers = 2000;
 
   public AppController() {
     DataSetModel dataSetModel = DataSetModel.getInstance();
@@ -28,7 +28,7 @@ public class AppController {
   @FXML
   void displayLineChartWithPeuckerAlgorithm() {
     System.out.println("Displaying Peucker Algorithm");
-    displayLineChart("Line Chart With Peucker Algorithm", "PEUCKER");
+    displayLineChart("Line Chart With Peucker Algorithm", "REDUCED");
   }
 
   /**

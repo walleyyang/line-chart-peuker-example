@@ -43,8 +43,8 @@ public class DataSetModel {
    */
   public void createDataSet(int numberOfMarkers) {
     Instant instant = Instant.now();
-    int range = 20;
-    int offset = 2;
+    int range = 2;
+    int offset = 1;
 
     for (int i = 0; i < numberOfMarkers; i++) {
       chartDataSet.put(instant.minus(i, ChronoUnit.HOURS).toString(),

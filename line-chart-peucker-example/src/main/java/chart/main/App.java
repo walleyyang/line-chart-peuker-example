@@ -30,7 +30,6 @@ public class App extends Application {
       primaryStage.setTitle("Line Chart Example");
 
       Pane pane = FXMLLoader.load(getClass().getResource("/views/app.fxml"));
-      // pane.getStylesheets().add(getClass().getResource("/styles/main.css").toExternalForm());
 
       primaryStage.setScene(new Scene(pane, 1000, 900));
       primaryStage.show();
