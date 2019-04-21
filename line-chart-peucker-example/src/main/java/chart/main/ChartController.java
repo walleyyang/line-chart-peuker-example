@@ -16,6 +16,7 @@ public class ChartController {
 
   private DataSetModel dataSetModel;
   private String lineChartType;
+  private double epsilon;
 
   @FXML
   private VBox chartContainer;
@@ -24,9 +25,11 @@ public class ChartController {
    * The constructor.
    * 
    * @param lineChartType The line chart type to display
+   * @param epsilon The epsilon
    */
-  public ChartController(String lineChartType) {
+  public ChartController(String lineChartType, Double epsilon) {
     this.lineChartType = lineChartType;
+    this.epsilon = epsilon;
     dataSetModel = DataSetModel.getInstance();
   }
 
@@ -79,6 +82,7 @@ public class ChartController {
     XYChart.Series<String, Number> series = new XYChart.Series<>();
 
     SeriesReducer reduced = new SeriesReducer();
+    reduced.setEpsilon(epsilon);
     reduced.filter(dataSetModel.getChartDataSet())
         .forEach((k, v) -> series.getData().add(new XYChart.Data<String, Number>(k, v)));
 

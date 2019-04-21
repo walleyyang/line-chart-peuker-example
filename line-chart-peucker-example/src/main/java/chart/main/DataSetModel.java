@@ -19,7 +19,6 @@ public class DataSetModel {
    * The constructor.
    */
   private DataSetModel() {
-    chartDataSet = new TreeMap<>();
     random = new Random();
   }
 
@@ -46,6 +45,8 @@ public class DataSetModel {
     int range = 2;
     int offset = 1;
 
+    chartDataSet = new TreeMap<>();
+    
     for (int i = 0; i < numberOfMarkers; i++) {
       chartDataSet.put(instant.minus(i, ChronoUnit.HOURS).toString(),
           random.nextInt(range) + offset);

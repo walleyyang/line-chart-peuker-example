@@ -8,18 +8,11 @@ import java.util.TreeMap;
 
 /**
  * Uses the Douglas Peucker algorithm for reducing the series.
+ * Reference: https://rosettacode.org/wiki/Ramer-Douglas-Peucker_line_simplification#Java
  */
 public class SeriesReducer {
 
   private double epsilon;
-
-  /**
-   * The constructor.
-   */
-  public SeriesReducer() {
-    // TODO: Remove
-    epsilon = 0.0;
-  }
 
   /**
    * Filters the series. This assumes the data set is a map that uses the keys for a line chart
@@ -29,12 +22,11 @@ public class SeriesReducer {
    */
   public Map<String, Integer> filter(Map<String, Integer> chartDataSet) {
     List<Entry<String, Integer>> dataSet = new ArrayList<>(chartDataSet.entrySet());
-    int startIndex = 0;
-    int endIndex = dataSet.size() - 1;
-
-    List<Entry<String, Integer>> reducedSeriesList = reduce(dataSet, startIndex, endIndex);
+    List<Entry<String, Integer>> pointListOut = new ArrayList<>();
+    reduce(dataSet, pointListOut);
+    
     Map<String, Integer> reducedSeriesMap = new TreeMap<>();
-    reducedSeriesList.forEach(entry -> reducedSeriesMap.put(entry.getKey(), entry.getValue()));
+    pointListOut.forEach(entry -> reducedSeriesMap.put(entry.getKey(), entry.getValue()));
     
     return reducedSeriesMap;
   }
@@ -42,38 +34,48 @@ public class SeriesReducer {
   /**
    * Gets the perpendicular distance.
    * 
-   * @param pointsData The PointsData object with the data
+   * @param line The line object with the data
    * @return The perpendicular distance
    */
-  private double getPerpendicularDistance(PointsData pointsData) {
-    double a = pointsData.getEndIndex() - pointsData.getStartIndex();
-    double b = pointsData.getEndEntry().getValue() - pointsData.getStartEntry().getValue();
-    double c = -(b * pointsData.getStartIndex() - a * pointsData.getStartEntry().getValue());
-    double distance = Math.hypot(a, b);
+  private double getPerpendicularDistance(Line line) {
+    double dx = line.getLineEndX() - line.getLineStartX();
+    double dy = line.getLineEnd().getValue() - line.getLineStart().getValue();
 
-    return Math.abs(b * pointsData.getEntryIndex() - a * pointsData.getEntry().getValue() + c)
-        / distance;
+    double mag = Math.hypot(dx, dy);
+    if (mag > 0.0) {
+        dx /= mag;
+        dy /= mag;
+    }
+    double pvx = line.getPointX() - line.getLineStartX();
+    double pvy = line.getPoint().getValue() - line.getLineStart().getValue();
+
+    double pvdot = dx * pvx + dy * pvy;
+    double ax = pvx - pvdot * dx;
+    double ay = pvy - pvdot * dy;
+
+    return Math.hypot(ax, ay);
   }
 
   /**
    * Reduces the number of points.
    */
-  private List<Entry<String, Integer>> reduce(List<Entry<String, Integer>> chartDataSet,
-      int startIndex, int endIndex) {
-    double maxDistance = 0;
+  private void reduce(List<Entry<String, Integer>> pointList, List<Entry<String, Integer>> listOut) {
+    int startIndex = 0;
+    int endIndex = pointList.size() - 1;
     int index = 0;
-
+    double maxDistance = 0;
+    
     for (int i = startIndex + 1; i < endIndex; i++) {
-      PointsData pointsData = new PointsData.Builder()
-          .setEntry(chartDataSet.get(i))
-          .setStartEntry(chartDataSet.get(startIndex))
-          .setEndEntry(chartDataSet.get(endIndex))
-          .setEntryIndex(i)
-          .setStartIndex(startIndex)
-          .setEndIndex(endIndex)
+      Line line = new Line.Builder()
+          .setPoint(pointList.get(i))
+          .setLineStart(pointList.get(startIndex))
+          .setLineEnd(pointList.get(endIndex))
+          .setPointX(i)
+          .setLineStartX(startIndex)
+          .setLineEndX(endIndex)
           .build();
 
-      double distance = getPerpendicularDistance(pointsData);
+      double distance = getPerpendicularDistance(line);
 
       if (distance > maxDistance) {
         index = i;
@@ -82,18 +84,23 @@ public class SeriesReducer {
     }
     
     if (maxDistance > epsilon) {
-      List<Entry<String, Integer>> reducedResult1 = reduce(chartDataSet, startIndex, index);
-      List<Entry<String, Integer>> reducedResult2 = reduce(chartDataSet, index, endIndex);
-      List<Entry<String, Integer>> result = new ArrayList<>(reducedResult1.size() + reducedResult2.size());
-      result.addAll(reducedResult1);
-      result.addAll(reducedResult2);
+      List<Entry<String, Integer>> result1 = new ArrayList<>();
+      List<Entry<String, Integer>> result2 = new ArrayList<>();
+      List<Entry<String, Integer>> firstLine = pointList.subList(startIndex, index + 1);
+      List<Entry<String, Integer>> lastLine = pointList.subList(index, pointList.size());
+      reduce(firstLine, result1);
+      reduce(lastLine, result2);
       
-      return result;
+      List<Entry<String, Integer>> result = new ArrayList<>(result1.size() + result2.size());
+      result.addAll(result1);
+      result.addAll(result2);
+      
+      listOut.addAll(result1.subList(startIndex, result1.size() - 1));
+      listOut.addAll(result2);
     } else {
-      List<Entry<String, Integer>> result = new ArrayList<>(endIndex - startIndex);
-      result.addAll(chartDataSet.subList(startIndex + 1, endIndex));
-
-      return result;
+      listOut.clear();
+      listOut.add(pointList.get(startIndex));
+      listOut.add(pointList.get(pointList.size() - 1));
     }
   }
 
@@ -102,7 +109,7 @@ public class SeriesReducer {
    * 
    * @param epsilon The margin for the curve
    */
-  public void setEpsilon(int epsilon) {
+  public void setEpsilon(double epsilon) {
     this.epsilon = epsilon;
   }
 

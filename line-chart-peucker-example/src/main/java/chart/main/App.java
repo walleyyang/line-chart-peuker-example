@@ -31,7 +31,10 @@ public class App extends Application {
 
       Pane pane = FXMLLoader.load(getClass().getResource("/views/app.fxml"));
 
-      primaryStage.setScene(new Scene(pane, 1000, 900));
+      int width = 400;
+      int height = 130;
+      
+      primaryStage.setScene(new Scene(pane, width, height));
       primaryStage.show();
     } catch (IOException e) {
       e.printStackTrace();

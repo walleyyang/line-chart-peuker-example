@@ -4,6 +4,8 @@ import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -11,26 +13,38 @@ import javafx.stage.Stage;
  * The AppController.
  */
 public class AppController {
-
-  private int numberOfMarkers = 2000;
+  DataSetModel dataSetModel;
+  
+  @FXML private Label reducedMarkersLabel;
+  @FXML private TextField epsilonTextField;
+  @FXML private TextField markersTextField;
 
   public AppController() {
-    DataSetModel dataSetModel = DataSetModel.getInstance();
-    dataSetModel.createDataSet(numberOfMarkers);
+    dataSetModel = DataSetModel.getInstance();
+  }
+  
+  /**
+   * The initialize method.
+   */
+  public void initialize() {
+    updateEpsilonMarker();
   }
 
   @FXML
-  void displayDefaultLineChart() {
-    System.out.println("Displaying Default Line Chart");
+  public void updateEpsilonMarker() {
+    dataSetModel.createDataSet(Integer.parseInt(markersTextField.textProperty().getValue()));
+  }
+
+  @FXML
+  public void displayDefaultLineChart() {
     displayLineChart("Default Line Chart", "DEFAULT");
   }
 
   @FXML
-  void displayLineChartWithPeuckerAlgorithm() {
-    System.out.println("Displaying Peucker Algorithm");
+  public void displayLineChartWithPeuckerAlgorithm() {
     displayLineChart("Line Chart With Peucker Algorithm", "REDUCED");
   }
-
+  
   /**
    * Displays the line chart.
    * 
@@ -39,7 +53,8 @@ public class AppController {
    */
   private void displayLineChart(String title, String lineChartType) {
     try {
-      ChartController controller = new ChartController(lineChartType);
+      Double epsilon = Double.parseDouble(epsilonTextField.textProperty().getValue());
+      ChartController controller = new ChartController(lineChartType, epsilon);
 
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/chart.fxml"));
       loader.setController(controller);
