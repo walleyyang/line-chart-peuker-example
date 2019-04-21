@@ -42,14 +42,15 @@ public class DataSetModel {
    */
   public void createDataSet(int numberOfMarkers) {
     Instant instant = Instant.now();
-    int range = 2;
+    int range = 10;
     int offset = 1;
 
     chartDataSet = new TreeMap<>();
     
     for (int i = 0; i < numberOfMarkers; i++) {
-      chartDataSet.put(instant.minus(i, ChronoUnit.HOURS).toString(),
-          random.nextInt(range) + offset);
+      // A little bit realistic
+      int value = i % 5 == 0 ? random.nextInt(range) + offset : 5;
+      chartDataSet.put(instant.minus(i, ChronoUnit.HOURS).toString(), value);
     }
   }
 
