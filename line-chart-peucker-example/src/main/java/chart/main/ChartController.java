@@ -18,6 +18,7 @@ public class ChartController {
   private String lineChartType;
   private double epsilon;
 
+
   @FXML
   private VBox chartContainer;
 

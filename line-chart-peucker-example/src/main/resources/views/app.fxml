@@ -21,7 +21,7 @@
       <HBox spacing="10.0">
          <children>
             <Label text="Epsilon" />
-            <TextField fx:id="epsilonTextField" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" text="1" />
+            <TextField fx:id="epsilonTextField" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" text="0.5" />
             <Label text="Markers" />
             <TextField fx:id="markersTextField" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="80.0" text="10" />
             <Button mnemonicParsing="false" onAction="#updateEpsilonMarker" text="Update" />

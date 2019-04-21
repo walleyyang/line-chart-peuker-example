@@ -1,5 +1,6 @@
 package chart.main;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ import java.util.TreeMap;
 public class SeriesReducer {
 
   private double epsilon;
-
+  
   /**
    * Filters the series. This assumes the data set is a map that uses the keys for a line chart
    * category axis and uses the values for a line chart number axis.
@@ -27,6 +28,13 @@ public class SeriesReducer {
     
     Map<String, Integer> reducedSeriesMap = new TreeMap<>();
     pointListOut.forEach(entry -> reducedSeriesMap.put(entry.getKey(), entry.getValue()));
+    
+    DecimalFormat numberFormat = new DecimalFormat("#.00");
+    int pointListOutSize = pointListOut.size();
+    String percentage =
+        numberFormat.format((1 - ((double) pointListOutSize / (double) dataSet.size())) * 100);
+    String reducedByMessage = pointListOutSize + " (" + percentage + "%)";
+    AppViewModel.getInstance().setReducedByMessage((reducedByMessage));
     
     return reducedSeriesMap;
   }

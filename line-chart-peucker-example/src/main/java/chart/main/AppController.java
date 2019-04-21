@@ -13,7 +13,8 @@ import javafx.stage.Stage;
  * The AppController.
  */
 public class AppController {
-  DataSetModel dataSetModel;
+  private DataSetModel dataSetModel;
+  private AppViewModel appViewModel;
   
   @FXML private Label reducedMarkersLabel;
   @FXML private TextField epsilonTextField;
@@ -21,6 +22,7 @@ public class AppController {
 
   public AppController() {
     dataSetModel = DataSetModel.getInstance();
+    appViewModel = AppViewModel.getInstance();
   }
   
   /**
@@ -28,6 +30,7 @@ public class AppController {
    */
   public void initialize() {
     updateEpsilonMarker();
+    reducedMarkersLabel.textProperty().bind(appViewModel.getReducedByMessage());
   }
 
   @FXML
@@ -72,5 +75,5 @@ public class AppController {
       e.printStackTrace();
     }
   }
-
+  
 }
